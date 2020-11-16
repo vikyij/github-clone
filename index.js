@@ -58,17 +58,34 @@ const populateRepos = (el, repos) => {
 
   repos.forEach((repo) => {
     let today = new Date();
-    let createdOn = new Date(repo.updatedAt);
-    let msInDay = 24 * 60 * 60 * 1000;
-
-    createdOn.setHours(0, 0, 0, 0);
-    today.setHours(0, 0, 0, 0)
-
-    let diff = (+today - +createdOn) / msInDay
+    let updatedOn = new Date(repo.updatedAt).toDateString();
+    let d =  new Date(repo.updatedAt);
+    let msInDay = 60 * 60 * 1000;
 
 
-    header = `<div class="orange-bottom">
-    <svg height="16" width="16" viewbox="0 0 16 16" version="1.1" aria-hidden="true">
+    d.setMinutes(0, 0, 0, 0);
+    today.setMinutes(0, 0, 0, 0)
+
+    //let diff = (+today - +createdOn) / msInDay
+    let diff = ((today - d) / msInDay)
+    //console.log(diff)
+    if (diff < 30) {
+      date = `${diff} hours ago`
+    }
+    else {
+      var split = updatedOn.split(' ');
+      var date = split.splice(1, 2);
+      var year = split[split.length - 2];
+      date = `on ${date.join(' ')}`;
+    }
+
+   
+
+
+    header = `
+    <div class="small-semi-header"></div>
+    <div class="orange-bottom">
+    <svg class="hideSmall" height="16" width="16" viewbox="0 0 16 16" version="1.1" aria-hidden="true">
         <path fill-rule="evenodd" d="M2 2.5A2.5 2.5 0 014.5 0h8.75a.75.75 0 01.75.75v12.5a.75.75 0 01-.75.75h-2.5a.75.75 0 110-1.5h1.75v-2h-8a1 1 0 00-.714 1.7.75.75 0 01-1.072 1.05A2.495 2.495 0 012 11.5v-9zm10.5-1V9h-8c-.356 0-.694.074-1 .208V2.5a1 1 0 011-1h8zM5 12.25v3.25a.25.25 0 00.4.2l1.45-1.087a.25.25 0 01.3 0L8.6 15.7a.25.25 0 00.4-.2v-3.25a.25.25 0 00-.25-.25h-3.5a.25.25 0 00-.25.25z"></path>
     </svg>
     Repositories
@@ -78,14 +95,14 @@ const populateRepos = (el, repos) => {
     <div class="repo">
       <button class="btn">${repo.viewerHasStarred === true ? '<i class="fa fa-star"></i>' : '<i class="fa fa-star-o"></i>'}${repo.viewerHasStarred === false ? "Star" : "Unstar"}</button>
       <div style="clear: both;"></div>
-      <h3 style="margin-top: -15px;"><a href="#" class="repo-header">${repo.name}</a></h3>
+      <h3 class="repo-name"><a href="#" class="repo-header">${repo.name}</a></h3>
       <span class="programming-lang">${repo.description !== null ? repo.description : ""}</span>
       <div class="repo-content">
           <span class="repo-language-color" style="background-color: ${repo.primaryLanguage !== null ? repo.primaryLanguage.color : null}"></span> 
           <span class="programming-lang">${repo.primaryLanguage !== null ? repo.primaryLanguage.name : null}</span>
           <span class="programming-lang"><i class="fa fa-star-o"></i>${repo.stargazerCount}</span>
           <span class="programming-lang"><i class="fa fa-code-fork"></i>${repo.forkCount}</span>
-          <span class="programming-lang">Updated ${diff} days ago</span>
+          <span class="programming-lang">Updated ${date}</span>
           <div class="semi-header2"></div>
       </div>
     </div>
@@ -95,3 +112,31 @@ const populateRepos = (el, repos) => {
 
   el.innerHTML = header + repo_list
 }
+
+/**function timeSince(date) {
+
+  var seconds = Math.floor((new Date() - date) / 1000);
+
+  var interval = seconds / 31536000;
+
+  if (interval > 1) {
+    return Math.floor(interval) + " years";
+  }
+  interval = seconds / 2592000;
+  if (interval > 1) {
+    return Math.floor(interval) + " months";
+  }
+  interval = seconds / 86400;
+  if (interval > 1) {
+    return Math.floor(interval) + " days";
+  }
+  interval = seconds / 3600;
+  if (interval > 1) {
+    return Math.floor(interval) + " hours";
+  }
+  interval = seconds / 60;
+  if (interval > 1) {
+    return Math.floor(interval) + " minutes";
+  }
+  return Math.floor(seconds) + " seconds";
+}**/
